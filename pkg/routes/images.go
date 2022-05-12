@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/RedHatInsights/tenant-utils/pkg/tenantid"
 	"github.com/go-chi/chi"
 	"github.com/redhatinsights/edge-api/pkg/db"
 	"github.com/redhatinsights/edge-api/pkg/dependencies"
@@ -51,6 +52,8 @@ func MakeImagesRouter(sub chi.Router) {
 		r.Post("/retry", RetryCreateImage)
 		r.Post("/resume", ResumeCreateImage)       // temporary to be replaced with EDA
 		r.Get("/notify", SendNotificationForImage) //TMP ROUTE TO SEND THE NOTIFICATION
+		r.Get("/orgid", GetOrgID)
+
 	})
 }
 
@@ -695,4 +698,21 @@ func SendNotificationForImage(w http.ResponseWriter, r *http.Request) {
 			services.Log.WithField("error", notify).Error("Error while trying to encode")
 		}
 	}
+}
+
+func GetOrgID(w http.ResponseWriter, r *http.Request) {
+	translator := tenantid.NewTranslator("http://${TENANT_TRANSLATOR_HOST}:${TENANT_TRANSLATOR_PORT}")
+	account, err := translator.EANToOrgID(context.Background(), "6089719")
+	log.Info(err)
+	if err != nil {
+		return
+	}
+	mappings := map[string]*string{
+		"5318290": strconv("901578"),
+		"654321":  nil,
+	}
+
+	translator = tenantid.NewTranslatorMockWithMapping(mappings)
+	log.Info("*******************************This is the start of Org ID *******************************")
+	log.Info(account)
 }

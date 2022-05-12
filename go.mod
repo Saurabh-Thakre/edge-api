@@ -1,6 +1,7 @@
 module github.com/redhatinsights/edge-api
 
 require (
+	github.com/RedHatInsights/tenant-utils v1.0.0 // indirect
 	github.com/aws/aws-sdk-go v1.44.5
 	github.com/bxcodec/faker/v3 v3.8.0
 	github.com/cavaliercoder/grab v2.0.0+incompatible
