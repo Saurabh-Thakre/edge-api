@@ -699,20 +699,30 @@ func SendNotificationForImage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+func stringRef(value string) *string {
+	return &value
+}
 
 func GetOrgID(w http.ResponseWriter, r *http.Request) {
-	translator := tenantid.NewTranslator("http://${TENANT_TRANSLATOR_HOST}:${TENANT_TRANSLATOR_PORT}")
-	account, err := translator.EANToOrgID(context.Background(), "6089719")
-	log.Info(err)
+	// translator := tenantid.NewTranslator("http://${TENANT_TRANSLATOR_HOST}:${TENANT_TRANSLATOR_PORT}")
+	// account, err := translator.EANToOrgID(context.Background(), "6089719")
+	// log.Info(err)
+	// if err != nil {
+	// 	return
+	// }
+	mappings := map[string]*string{
+		"6089719": stringRef("5318290"),
+	}
+	// var sss []byte
+	translator := tenantid.NewTranslatorMockWithMapping(mappings)
+	log.Info("*******************************This is the start of Org ID *******************************")
+	log.Infof("%#v", translator)
+	ssss, err := fmt.Println(translator)
 	if err != nil {
 		return
 	}
-	mappings := map[string]*string{
-		"5318290": strconv("901578"),
-		"654321":  nil,
-	}
+	log.Infof("%#v", ssss)
 
-	translator = tenantid.NewTranslatorMockWithMapping(mappings)
-	log.Info("*******************************This is the start of Org ID *******************************")
-	log.Info(account)
+	// log.Info(account)
+
 }
